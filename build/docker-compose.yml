@@ -1,0 +1,46 @@
+{{PROJECT_NAME}}_apache:
+  build: "apache"
+  container_name: "{{PROJECT_NAME}}-apache"
+  ports:
+    - "{{APACHE_PORT_EXPOSE}}:80"
+  links:
+    - {{PROJECT_NAME}}_php
+    - global_mailhog
+  volumes:
+    - ./src:/var/www/app
+    - ./apache/conf:/usr/local/apache2/conf/overwrite
+  working_dir: "/var/www/app"
+
+{{PROJECT_NAME}}_php:
+  build: "php"
+  container_name: "{{PROJECT_NAME}}-php"
+  links:
+    - {{PROJECT_NAME}}_db
+    - global_mailhog
+  volumes:
+    - ./php/php.ini:/usr/local/etc/php/conf.d/php-override.ini
+    - ./src:/var/www/app
+    - ./db:/var/www/db
+    - "${SSH_AUTH_SOCK}:/ssh-agent"
+    - ./php/bin/mhsendmail:/usr/local/bin/mhsendmail
+  environment:
+    - SSH_AUTH_SOCK=/ssh-agent
+  working_dir: "/var/www/app"
+
+{{PROJECT_NAME}}_db:
+  image: mysql
+  container_name: "{{PROJECT_NAME}}-db"
+  ports:
+    - "{{DB_PORT_EXPOSE}}:3306"
+  volumes:
+    - ./db:/var/www/db
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  working_dir: "/var/www/db"
+
+global_mailhog:
+  image: mailhog/mailhog
+  container_name: "global-mailhog"
+  ports:
+    - "1025:1025"
+    - "8025:8025"

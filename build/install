@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")/.."
+
+mkdir src
+
+GITREPO="{{GIT_REPO}}"
+if [ -n "$GITREPO" ]; then
+    git clone "$GITREPO" "src"
+fi
+
+docker-compose down
+docker-compose build
+docker-compose up -d
+
+sleep 15
+
+
+echo -e "Setting up file permissions"
+./bin/exec php "setfacl -dR -m u:www-data:rwX /var/www/app"
+./bin/exec php "setfacl -R -m u:www-data:rwX /var/www/app"
+
+echo -e "Creating database"
+./bin/exec db 'mysql -uroot -proot -e "CREATE DATABASE {{DATABASE_NAME}};"'
+
+if [ -n "{{DUMP_NAME}}" ]; then
+    echo -e "Loading database dump"
+    ./bin/exec db "mysql -uroot -proot {{DATABASE_NAME}} < /var/www/db/{{DUMP_NAME}}"
+fi
+
+containerNames=('apache' 'php' 'db')
+for name in "${containerNames[@]}"; do
+    echo -n "IP of container {{PROJECT_NAME}}-$name: "
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}' {{PROJECT_NAME}}-$name
+done
+
+
+echo -n "IP of container global-mailhog: "
+docker inspect --format '{{ .NetworkSettings.IPAddress }}' global-mailhog

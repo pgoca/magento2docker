@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")/.."
+
+if [ -z "$2" ]; then
+    docker exec -ti "{{PROJECT_NAME}}-${1}" /bin/bash
+fi
+
+docker exec -ti "{{PROJECT_NAME}}-${1}" /bin/bash -c "$2"
