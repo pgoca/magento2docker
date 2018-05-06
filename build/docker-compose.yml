@@ -5,7 +5,7 @@
     - "{{APACHE_PORT_EXPOSE}}:80"
   links:
     - {{PROJECT_NAME}}_php
-    - global_mailhog
+    - {{PROJECT_NAME}}_mailhog
   volumes:
     - ./src:/var/www/app
     - ./apache/conf:/usr/local/apache2/conf/overwrite
@@ -16,7 +16,7 @@
   container_name: "{{PROJECT_NAME}}-php"
   links:
     - {{PROJECT_NAME}}_db
-    - global_mailhog
+    - {{PROJECT_NAME}}_mailhog
   volumes:
     - ./php/php.ini:/usr/local/etc/php/conf.d/php-override.ini
     - ./src:/var/www/app
@@ -38,9 +38,9 @@
     - MYSQL_ROOT_PASSWORD=root
   working_dir: "/var/www/db"
 
-global_mailhog:
+{{PROJECT_NAME}}_mailhog:
   image: mailhog/mailhog
-  container_name: "global-mailhog"
+  container_name: "{{PROJECT_NAME}}-mailhog"
   ports:
     - "1025:1025"
     - "8025:8025"
