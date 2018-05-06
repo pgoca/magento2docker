@@ -28,12 +28,10 @@ if [ -n "{{DUMP_NAME}}" ]; then
     ./bin/exec db "mysql -uroot -proot {{DATABASE_NAME}} < /var/www/db/{{DUMP_NAME}}"
 fi
 
-containerNames=('apache' 'php' 'db')
+containerNames=('apache' 'php' 'db' 'mailhog')
 for name in "${containerNames[@]}"; do
     echo -n "IP of container {{PROJECT_NAME}}-$name: "
     docker inspect --format '{{ .NetworkSettings.IPAddress }}' {{PROJECT_NAME}}-$name
 done
 
 
-echo -n "IP of container global-mailhog: "
-docker inspect --format '{{ .NetworkSettings.IPAddress }}' global-mailhog
