@@ -43,4 +43,4 @@
   container_name: "{{PROJECT_NAME}}-mailhog"
   ports:
     - "1025:1025"
-    - "8025:8025"
+    - "{{MAILHOG_PORT_EXPOSE}}:8025"

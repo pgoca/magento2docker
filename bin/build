@@ -24,6 +24,9 @@ mysqlPort=$(getUserInput "3306")
 echo -n "[DEFAULT=magento] Database name: "
 mysqlDatabaseName=$(getUserInput "magento")
 
+echo -n "[DEFAULT=8025] Mailhog interface port: "
+mailhogPort=$(getUserInput "8025")
+
 echo "PHP versions available - 7.0, 7.1, 7.2 and more (https://hub.docker.com/r/library/php/tags/)"
 echo -n "[DEFAULT=7.1] PHP version: "
 phpVersion=$(getUserInput "7.1")
@@ -37,6 +40,7 @@ cp ./build/docker-compose.yml ./docker-compose.yml
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./docker-compose.yml
 sed -i "s/{{APACHE_PORT_EXPOSE}}/$apachePort/g" ./docker-compose.yml
 sed -i "s/{{DB_PORT_EXPOSE}}/$mysqlPort/g" ./docker-compose.yml
+sed -i "s/{{MAILHOG_PORT_EXPOSE}}/$mailhogPort/g" ./docker-compose.yml
 
 cp ./build/php_Dockerfile ./php/Dockerfile
 
