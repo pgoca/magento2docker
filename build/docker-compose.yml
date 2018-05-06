@@ -33,6 +33,7 @@
   ports:
     - "{{DB_PORT_EXPOSE}}:3306"
   volumes:
+    - ./db/data:/var/lib/mysql
     - ./db:/var/www/db
   environment:
     - MYSQL_ROOT_PASSWORD=root
