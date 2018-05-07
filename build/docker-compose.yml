@@ -28,7 +28,7 @@
   working_dir: "/var/www/app"
 
 {{PROJECT_NAME}}_db:
-  image: mysql
+  image: mysql:5.7
   container_name: "{{PROJECT_NAME}}-db"
   ports:
     - "{{DB_PORT_EXPOSE}}:3306"
