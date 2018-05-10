@@ -1,1 +1,2 @@
 sendmail_path = "/usr/local/bin/mhsendmail --smtp-addr='{{PROJECT_NAME}}-mailhog:1025'"
+memory_limit=2G
