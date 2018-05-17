@@ -1,2 +1,6 @@
 sendmail_path = "/usr/local/bin/mhsendmail --smtp-addr='{{PROJECT_NAME}}-mailhog:1025'"
 memory_limit=2G
+[xdebug]
+xdebug.remote_enable=1
+xdebug.remote_host=172.17.0.1
+xdebug.idekey=pstorm
