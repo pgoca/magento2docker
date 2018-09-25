@@ -64,6 +64,8 @@ sed -i "s>{{GIT_REPO}}>$gitRepo>g" ./bin/install
 cp ./build/php_ini ./php/php.ini
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./php/php.ini
 
+cp ./build/php_bashrc ./php/bashrc
+
 chmod +x ./bin/*
 
 echo "Finished building without errors."
