@@ -1,48 +1,49 @@
-{{PROJECT_NAME}}_apache:
-  build: "apache"
-  container_name: "{{PROJECT_NAME}}-apache"
-  ports:
-    - "{{APACHE_PORT_EXPOSE}}:80"
-  links:
-    - {{PROJECT_NAME}}_php
-    - {{PROJECT_NAME}}_mailhog
-  volumes:
-    - ./src:/var/www/app
-    - ./apache/conf:/usr/local/apache2/conf/overwrite
-  working_dir: "/var/www/app"
-
-{{PROJECT_NAME}}_php:
-  build: "php"
-  container_name: "{{PROJECT_NAME}}-php"
-  links:
-    - {{PROJECT_NAME}}_db
-    - {{PROJECT_NAME}}_mailhog
-  volumes:
-    - ./php/bashrc:/root/.bashrc
-    - ./php/php.ini:/usr/local/etc/php/conf.d/php-override.ini
-    - ./src:/var/www/app
-    - ./db:/var/www/db
-    - "${SSH_AUTH_SOCK}:/ssh-agent"
-    - ./php/bin/mhsendmail:/usr/local/bin/mhsendmail
-  environment:
-    - SSH_AUTH_SOCK=/ssh-agent
-  working_dir: "/var/www/app"
-
-{{PROJECT_NAME}}_db:
-  image: mysql:5.7
-  container_name: "{{PROJECT_NAME}}-db"
-  ports:
-    - "{{DB_PORT_EXPOSE}}:3306"
-  volumes:
-    - ./db/data:/var/lib/mysql
-    - ./db:/var/www/db
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-  working_dir: "/var/www/db"
-
-{{PROJECT_NAME}}_mailhog:
-  image: mailhog/mailhog
-  container_name: "{{PROJECT_NAME}}-mailhog"
-  ports:
-    - "1025:1025"
-    - "{{MAILHOG_PORT_EXPOSE}}:8025"
+version: '3'
+services:
+  {{PROJECT_NAME}}_nginx:
+    image: nginx:latest
+    container_name: "{{PROJECT_NAME}}-nginx"
+    ports:
+      - "{{NGINX_PORT_EXPOSE}}:80"
+    links:
+      - {{PROJECT_NAME}}_php
+      - {{PROJECT_NAME}}_mailhog
+    volumes:
+      - /var/www/m2/{{PROJECT_FOLDER}}:/usr/share/nginx/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: "/usr/share/nginx/html"
+  {{PROJECT_NAME}}_php:
+    restart: always
+    build: "php"
+    container_name: "{{PROJECT_NAME}}-php"
+    links:
+      - {{PROJECT_NAME}}_db
+      - {{PROJECT_NAME}}_mailhog
+    volumes:
+      - /var/www/m2/{{PROJECT_FOLDER}}:/usr/share/nginx/html
+      - ./php/bashrc:/root/.bashrc
+      - ./php/php.ini:/usr/local/etc/php/conf.d/php-override.ini
+      - ./db:/var/www/db
+      - "${SSH_AUTH_SOCK}:/ssh-agent"
+      - ./php/bin/mhsendmail:/usr/local/bin/mhsendmail
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
+    working_dir: "/usr/share/nginx/html"
+    ports:
+      - "4{{NGINX_PORT_EXPOSE}}:9000"
+  {{PROJECT_NAME}}_db:
+    restart: always
+    image: mysql:5
+    container_name: "{{PROJECT_NAME}}-db"
+    ports:
+      - "{{DB_PORT_EXPOSE}}:3306"
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db:/usr/share/nginx/html
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+  {{PROJECT_NAME}}_mailhog:
+    image: mailhog/mailhog
+    container_name: "{{PROJECT_NAME}}-mailhog"
+    ports:
+      - "{{MAILHOG_PORT_EXPOSE}}:8025"

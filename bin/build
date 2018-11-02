@@ -12,33 +12,33 @@ getUserInput() {
 echo -n "[Optional] Git repository URL: "
 gitRepo=$(getUserInput "")
 
-echo -n "[DEFAULT=magento2project] Project name: "
-projectName=$(getUserInput "magento2project")
+echo -n "[DEFAULT=html] Project source folder: "
+projectFolder=$(getUserInput "magento-empty")
 
-echo -n "[DEFAULT=80] Port to access apache: "
-apachePort=$(getUserInput "80")
+echo -n "[DEFAULT=m2project] Project name: "
+projectName=$(getUserInput "m2project")
 
-echo -n "[DEFAULT=3306] Port to access mysql: "
-mysqlPort=$(getUserInput "3306")
+echo -n "[DEFAULT=8080] Port to access nginx: "
+nginxPort=$(getUserInput "8080")
+
+echo -n "[DEFAULT=13306] Port to access mysql: "
+mysqlPort=$(getUserInput "13306")
 
 echo -n "[DEFAULT=magento] Database name: "
 mysqlDatabaseName=$(getUserInput "magento")
 
 echo -n "[DEFAULT=8025] Mailhog interface port: "
-mailhogPort=$(getUserInput "8025")
-
-echo "PHP versions available - 7.0, 7.1, 7.2 and more (https://hub.docker.com/r/library/php/tags/)"
-echo -n "[DEFAULT=7.1] PHP version: "
-phpVersion=$(getUserInput "7.1")
+mailhogPort=$(getUserInput "1025")
 
 echo "If you want to import database dump during installation process then copy file to db directory and type its name. Leave empty otherwise."
 echo -n "Dump filename: "
 dumpName=$(getUserInput "")
 
 cp ./build/docker-compose.yml ./docker-compose.yml
-
+pwd
+sed -i "s/{{PROJECT_FOLDER}}/$projectFolder/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./docker-compose.yml
-sed -i "s/{{APACHE_PORT_EXPOSE}}/$apachePort/g" ./docker-compose.yml
+sed -i "s/{{NGINX_PORT_EXPOSE}}/$nginxPort/g" ./docker-compose.yml
 sed -i "s/{{DB_PORT_EXPOSE}}/$mysqlPort/g" ./docker-compose.yml
 sed -i "s/{{MAILHOG_PORT_EXPOSE}}/$mailhogPort/g" ./docker-compose.yml
 
@@ -46,11 +46,8 @@ cp ./build/php_Dockerfile ./php/Dockerfile
 
 sed -i "s/{{PHP_VERSION}}/$phpVersion/g" ./php/Dockerfile
 
-cp ./build/apache_Dockerfile ./apache/Dockerfile
-cp ./build/apache_conf_httpd ./apache/conf/httpd.conf
-
-cp ./build/apache_conf_sites-enabled_docker-vhost ./apache/conf/sites-enabled/docker-vhost.conf
-sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./apache/conf/sites-enabled/docker-vhost.conf
+cp ./build/default.conf ./nginx/
+sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./nginx/default.conf
 
 cp ./build/exec ./bin/exec
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./bin/exec
@@ -68,4 +65,4 @@ cp ./build/php_bashrc ./php/bashrc
 
 chmod +x ./bin/*
 
-echo "Finished building without errors."
+echo -e "\e[32m Finished building without errors."
