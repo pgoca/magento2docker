@@ -7,3 +7,4 @@ if [ -z "$2" ]; then
 fi
 
 docker exec -ti "{{PROJECT_NAME}}-${1}" /bin/bash -c "$2"
+

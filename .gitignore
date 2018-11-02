@@ -1,6 +1,6 @@
-/docker-compose.yml
-/apache
 /bin
+!/bin/build
 /db
 /php
 /src
+

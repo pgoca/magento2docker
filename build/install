@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "$0")/.."
-
+# cd "$(dirname "$0")/.."
 mkdir src
 
 GITREPO="{{GIT_REPO}}"
@@ -13,25 +12,22 @@ docker-compose down
 docker-compose build
 docker-compose up -d
 
-sleep 1
+sleep 10
 
-
-echo -e "Setting up file permissions"
-./bin/exec php "setfacl -dR -m u:www-data:rwX /var/www/app"
-./bin/exec php "setfacl -R -m u:www-data:rwX /var/www/app"
+echo -e "---===Setting up file permissions====---"
+./bin/exec php "setfacl -dR -m u:www-data:rwX /usr/share/nginx/html"
+./bin/exec php "setfacl -R -m u:www-data:rwX /usr/share/nginx/html"
 
 echo -e "Creating database"
 ./bin/exec db 'mysql -uroot -proot -e "CREATE DATABASE {{DATABASE_NAME}};"'
 
 if [ -n "{{DUMP_NAME}}" ]; then
     echo -e "Loading database dump"
-    ./bin/exec db "mysql -uroot -proot {{DATABASE_NAME}} < /var/www/db/{{DUMP_NAME}}"
+    ./bin/exec db "mysql -uroot -proot {{DATABASE_NAME}} < /usr/share/nginx/html/{{DUMP_NAME}}"
 fi
 
-containerNames=('apache' 'php' 'db' 'mailhog')
+containerNames=('nginx' 'php' 'db' 'mailhog')
 for name in "${containerNames[@]}"; do
     echo -n "IP of container {{PROJECT_NAME}}-$name: "
     docker inspect --format '{{ .NetworkSettings.IPAddress }}' {{PROJECT_NAME}}-$name
 done
-
-
