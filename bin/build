@@ -9,38 +9,76 @@ getUserInput() {
     echo $userInput
 }
 
-echo -n "[Optional] Git repository URL: "
+CHECK_MARK="\033[0;32m\xE2\x9C\x94\033[0m"
+
+# change this path depending on your needs
+projectAbsolutePath="/var/www/m2/"
+
+echo -n -e "\e[1;33m[Recommended] Git repository URL (preceded by 'git clone'): "
 gitRepo=$(getUserInput "")
 
-echo -n "[DEFAULT=html] Project source folder: "
-projectFolder=$(getUserInput "magento-empty")
+gitLink=${gitRepo#*/}
+projectFolder=${gitLink%.*}
+projectNumber=${projectFolder/-*/}
 
-echo -n "[DEFAULT=m2project] Project name: "
-projectName=$(getUserInput "m2project")
+projectName=${projectFolder/$projectNumber-/}
+echo -e "\e[0;33mProject folder: "$projectFolder
+echo -e "\e[0;33mProject number: "$projectNumber
+echo -e "\e[0;33mProject name: "$projectName
 
-echo -n "[DEFAULT=8080] Port to access nginx: "
-nginxPort=$(getUserInput "8080")
+echo -n -e "\e[1;37m[DEFAULT=$projectFolder] Project source folder: "
+projectFolder=$(getUserInput $projectFolder)
 
-echo -n "[DEFAULT=13306] Port to access mysql: "
-mysqlPort=$(getUserInput "13306")
+echo -n "[DEFAULT=$projectName] Project name: "
+projectName=$(getUserInput $projectName)
 
-echo -n "[DEFAULT=magento] Database name: "
+echo -n -e "\e[1;37m[DEFAULT=$projectNumber] Project number - four digits: "
+projectNumber=$(getUserInput "$projectNumber")
+
+if [[ -n ${projectNumber//[0-9]/} ]]; then
+    echo -e "\e[0;31mProject number contains letters! \nPlease run build again!"; exit
+fi
+
+if [ ${#projectNumber} -eq 4 ]; then echo -e "${CHECK_MARK}  \e[0;32mDefault ports will be created based on Project Number \n${CHECK_MARK}\e[0;32m  First digit will be trimmed"
+    else echo -e "\e[0;31m" $projectNumber - "is not valid Project Number \n Please run 'build' again and enter FOUR digits!"; exit
+fi
+
+echo -n -e "\e[0;33m    Creating project directory: "$projectAbsolutePath$projectFolder
+mkdir -p $projectAbsolutePath$projectFolder
+#echo -e "\e[0K\r new line \e[0;33mCreating project directory: "$projectAbsolutePath$projectFolder
+echo -e "\\r${CHECK_MARK}  \e[0;32mCreated : "
+
+echo -n -e "\e[1;37m[DEFAULT=7.0] PHP version: "
+phpVersion=$(getUserInput "7.0")
+
+echo -n -e "\e[1;37m[DEFAULT=magento] Database name: "
 mysqlDatabaseName=$(getUserInput "magento")
 
-echo -n "[DEFAULT=8025] Mailhog interface port: "
-mailhogPort=$(getUserInput "1025")
+echo -n -e "\e[1;37mDo you want to import newest database dump from db directory (e - enter filename)? [Y/n/e]: "
+doImportDb=$(getUserInput "Y")
+    if [ $doImportDb == "Y" ] || [ $doImportDb == "y" ]; then
+        cd db
+        dumpName=$(ls -t *.sql | head -1)
+        cd ../.
+    elif [ $doImportDb == "e" ] || [ $doImportDb == "E" ]; then
+        echo -n -e "\e[1;37mEnter full database name: "
+        dumpName=$(getUserInput)
+        if [ -z "$dumpName" ]; then echo -e "\e[0;31mFilename cannot be empty!"; exit
+        fi
+    else
+        echo "Skipping import"
+    fi
 
-echo "If you want to import database dump during installation process then copy file to db directory and type its name. Leave empty otherwise."
-echo -n "Dump filename: "
-dumpName=$(getUserInput "")
+echo -e "${CHECK_MARK}  \e[0;32mDatabase""\e[1;32m "$dumpName "\e[0;32mwill be imported to ""\e[1;32m"$mysqlDatabaseName
 
 cp ./build/docker-compose.yml ./docker-compose.yml
-pwd
+
+projectNumber="${projectNumber:1}"
+
 sed -i "s/{{PROJECT_FOLDER}}/$projectFolder/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./docker-compose.yml
-sed -i "s/{{NGINX_PORT_EXPOSE}}/$nginxPort/g" ./docker-compose.yml
-sed -i "s/{{DB_PORT_EXPOSE}}/$mysqlPort/g" ./docker-compose.yml
-sed -i "s/{{MAILHOG_PORT_EXPOSE}}/$mailhogPort/g" ./docker-compose.yml
+sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./docker-compose.yml
+sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/projectAbsolutePath/g" ./docker-compose.yml
 
 cp ./build/php_Dockerfile ./php/Dockerfile
 
@@ -65,4 +103,4 @@ cp ./build/php_bashrc ./php/bashrc
 
 chmod +x ./bin/*
 
-echo -e "\e[32m Finished building without errors."
+echo -e "${CHECK_MARK}  \e[0;32mFinished building without errors."

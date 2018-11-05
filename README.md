@@ -1,6 +1,6 @@
 # Magento 2 docker
 
-##Introduction
+## Introduction
 
 Fork of https://github.com/pgoca/magento2docker
 
@@ -8,7 +8,13 @@ Fork of https://github.com/pgoca/magento2docker
 2. docker-compose is in version 3.
 3. http://localhost:8080 is default address - port may be changed during installation. 
 4. Copy database sql file to `db` folder. Installer will ask for full name only.
- 
+5. Default path for project files is /var/www/m2/. You can change this in build/docker-compose.yml line 15 `projectAbsolutePath`
+
+## Preparation - best practice 
+
+1. Copy db sql dump to `./db`. Script will select the newest one from this directory.
+2. Prepare git link to repo 
+
 ## Initialize
 
 1. Run `./bin/build` and follow script instructions
