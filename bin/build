@@ -10,13 +10,23 @@ getUserInput() {
 }
 
 CHECK_MARK="\033[0;32m\xE2\x9C\x94\033[0m"
-
-# change this path depending on your needs
-projectAbsolutePath="/var/www/m2/"
+source $(dirname "$0")/custom.conf
+gitConfigLink=${gitRepoLink#*git clone}
+if [ -z "$gitRepoLink" ]; then
+gitConfigLink=${gitRepoLink#*git clone}
+echo -e "\e[1;33mFound git link"$gitConfigLink" in custom.conf"
+echo -e "\e[1;33mIf You don't want to use 'git clone', remove this variable from custom.conf"
+fi
 
 echo -n -e "\e[1;33m[Recommended] Git repository URL (preceded by 'git clone'): "
 gitRepo=$(getUserInput "")
 
+if [ -z "$gitRepo" ]; then
+    gitRepo=$gitRepoLink
+    echo -e "$gitConfigLink"
+fi
+
+# trim project vars from git link
 gitLink=${gitRepo#*/}
 projectFolder=${gitLink%.*}
 projectNumber=${projectFolder/-*/}
@@ -42,11 +52,6 @@ fi
 if [ ${#projectNumber} -eq 4 ]; then echo -e "${CHECK_MARK}  \e[0;32mDefault ports will be created based on Project Number \n${CHECK_MARK}\e[0;32m  First digit will be trimmed"
     else echo -e "\e[0;31m" $projectNumber - "is not valid Project Number \n Please run 'build' again and enter FOUR digits!"; exit
 fi
-
-echo -n -e "\e[0;33m    Creating project directory: "$projectAbsolutePath$projectFolder
-mkdir -p $projectAbsolutePath$projectFolder
-#echo -e "\e[0K\r new line \e[0;33mCreating project directory: "$projectAbsolutePath$projectFolder
-echo -e "\\r${CHECK_MARK}  \e[0;32mCreated : "
 
 echo -n -e "\e[1;37m[DEFAULT=7.0] PHP version: "
 phpVersion=$(getUserInput "7.0")
@@ -95,6 +100,19 @@ sed -i "s/{{DUMP_NAME}}/$dumpName/g" ./bin/install
 sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./bin/install
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./bin/install
 sed -i "s>{{GIT_REPO}}>$gitRepo>g" ./bin/install
+sed -i "s>{{PROJECT_ABSOLUTE_PATH}}>$projectAbsolutePath>g" ./bin/install
+sed -i "s>{{PROJECT_FOLDER}}>$projectFolder>g" ./bin/install
+sed -i "s>{{PROJECT_NUMBER}}>$projectNumber>g" ./bin/install
+
+mkdir -p ./magento/app/etc
+mkdir -p ./magento/pub
+
+cp ./build/magento/env.php ./magento/app/etc
+sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./magento/app/etc/env.php
+sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./magento/app/etc/env.php
+sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./magento/app/etc/env.php
+
+cp ./build/magento/index.php ./magento/pub/index.php
 
 cp ./build/php_ini ./php/php.ini
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./php/php.ini

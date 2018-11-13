@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
+CHECK_MARK="\033[0;32m\xE2\x9C\x94\033[0m"
+
+echo -n -e "\e[0;33m    Creating project directory: {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"
+mkdir -p {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}
+echo -e "\e[0K\r \e[0;33mCreating project directory: {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"
+echo -e "\\r${CHECK_MARK}  \e[0;32mCreated : "
+cd magento
+cp ./ -r {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}
 
 # cd "$(dirname "$0")/.."
-mkdir src
 
+exit
 GITREPO="{{GIT_REPO}}"
 if [ -n "$GITREPO" ]; then
-   "$GITREPO" "src"
+echo {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"/"
+   $GITREPO {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}
 fi
 
 docker-compose down
