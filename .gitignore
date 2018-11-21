@@ -1,7 +1,12 @@
-/bin
+/bin/*
 !/bin/build
 !/bin/custom.conf
 /db
 /php
 /src
 /nginx
+/node
+/docker-compose.yml
+.idea/
+/magento
+/package.json

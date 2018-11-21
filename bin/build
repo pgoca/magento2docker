@@ -21,7 +21,6 @@ fi
 echo -n -e "\e[1;33m[Recommended] Git repository URL (preceded by 'git clone'): "
 gitRepo=$(getUserInput "")
 
-
 if [ -z "$gitRepo" ]; then
     gitRepo=$gitRepoLink
     echo -e "$gitConfigLink"
@@ -91,6 +90,8 @@ sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/$projectAbsolutePath/g" ./docker-compose.yml
 
 cp ./build/php_Dockerfile ./php/Dockerfile
+cp ./build/node_Dockerfile ./node/Dockerfile
+cp ./build/package.json ./package.json
 
 sed -i "s/{{PHP_VERSION}}/$phpVersion/g" ./php/Dockerfile
 
@@ -128,4 +129,4 @@ chmod +x ./bin/*
 
 echo -e "${CHECK_MARK}  \e[0;32mFinished building without errors."
 echo -e "Run bin/install"
-echo -e "After installation You can find Your project at localhost:8"$projectNumber
+echo -e "After installation You can find Your project at \e[1;32mlocalhost:8"$projectNumber
