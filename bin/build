@@ -12,7 +12,7 @@ getUserInput() {
 CHECK_MARK="\033[0;32m\xE2\x9C\x94\033[0m"
 source $(dirname "$0")/custom.conf
 gitConfigLink=${gitRepoLink#*git clone}
-if [ -z "$gitRepoLink" ]; then
+if [ -n "$gitRepoLink" ]; then
 gitConfigLink=${gitRepoLink#*git clone}
 echo -e "\e[1;33mFound git link"$gitConfigLink" in custom.conf"
 echo -e "\e[1;33mIf You don't want to use 'git clone', remove this variable from custom.conf"
@@ -21,15 +21,16 @@ fi
 echo -n -e "\e[1;33m[Recommended] Git repository URL (preceded by 'git clone'): "
 gitRepo=$(getUserInput "")
 
+
 if [ -z "$gitRepo" ]; then
     gitRepo=$gitRepoLink
     echo -e "$gitConfigLink"
+    # trim project vars from git link
 fi
 
-# trim project vars from git link
-gitLink=${gitRepo#*/}
-projectFolder=${gitLink%.*}
-projectNumber=${projectFolder/-*/}
+    gitLink=${gitRepo#*/}
+    projectFolder=${gitLink%.*}
+    projectNumber=${projectFolder/-*/}
 
 projectName=${projectFolder/$projectNumber-/}
 echo -e "\e[0;33mProject folder: "$projectFolder
@@ -53,8 +54,8 @@ if [ ${#projectNumber} -eq 4 ]; then echo -e "${CHECK_MARK}  \e[0;32mDefault por
     else echo -e "\e[0;31m" $projectNumber - "is not valid Project Number \n Please run 'build' again and enter FOUR digits!"; exit
 fi
 
-echo -n -e "\e[1;37m[DEFAULT=7.0] PHP version: "
-phpVersion=$(getUserInput "7.0")
+echo -n -e "\e[1;37m[DEFAULT=7.1] PHP version: "
+phpVersion=$(getUserInput "7.1")
 
 echo -n -e "\e[1;37m[DEFAULT=magento] Database name: "
 mysqlDatabaseName=$(getUserInput "magento")
@@ -74,7 +75,11 @@ doImportDb=$(getUserInput "Y")
         echo "Skipping import"
     fi
 
+if [ -n "$dumpName" ]; then
 echo -e "${CHECK_MARK}  \e[0;32mDatabase""\e[1;32m "$dumpName "\e[0;32mwill be imported to ""\e[1;32m"$mysqlDatabaseName
+else
+echo "No database will be imported"
+fi
 
 cp ./build/docker-compose.yml ./docker-compose.yml
 
@@ -83,7 +88,7 @@ projectNumber="${projectNumber:1}"
 sed -i "s/{{PROJECT_FOLDER}}/$projectFolder/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./docker-compose.yml
-sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/projectAbsolutePath/g" ./docker-compose.yml
+sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/$projectAbsolutePath/g" ./docker-compose.yml
 
 cp ./build/php_Dockerfile ./php/Dockerfile
 
@@ -107,12 +112,12 @@ sed -i "s>{{PROJECT_NUMBER}}>$projectNumber>g" ./bin/install
 mkdir -p ./magento/app/etc
 mkdir -p ./magento/pub
 
-cp ./build/magento/env.php ./magento/app/etc
+cp -f ./build/magento/env.php ./magento/app/etc
 sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./magento/app/etc/env.php
 sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./magento/app/etc/env.php
 sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./magento/app/etc/env.php
 
-cp ./build/magento/index.php ./magento/pub/index.php
+cp -f ./build/magento/index.php ./magento/pub/index.php
 
 cp ./build/php_ini ./php/php.ini
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./php/php.ini
@@ -122,3 +127,5 @@ cp ./build/php_bashrc ./php/bashrc
 chmod +x ./bin/*
 
 echo -e "${CHECK_MARK}  \e[0;32mFinished building without errors."
+echo -e "Run bin/install"
+echo -e "After installation You can find Your project at localhost:8"$projectNumber
