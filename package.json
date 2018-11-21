@@ -1,0 +1,19 @@
+{
+  "name": "magento",
+  "version": "1.0.0",
+  "description": "default",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fr4gm3nt/magento2docker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fr4gm3nt/magento2docker/issues"
+  },
+  "homepage": "https://github.com/fr4gm3nt/magento2docker#readme"
+}

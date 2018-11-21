@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
+CHECK_MARK="\033[0;32m\xE2\x9C\x94\033[0m"
 
-# cd "$(dirname "$0")/.."
-mkdir src
+echo -n -e "\e[0;33m    Creating project directory: {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"
+mkdir -p {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}
+echo -e "\e[0K\r \e[0;33mCreating project directory: {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"
+echo -e "\\r${CHECK_MARK}  \e[0;32mCreated\e[0m"
+
 
 GITREPO="{{GIT_REPO}}"
 if [ -n "$GITREPO" ]; then
-   "$GITREPO" "src"
+echo {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"/"
+   $GITREPO {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}
 fi
+
+cd magento
+
+cp -r ./* {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"/"
+# cd "$(dirname "$0")/.."
+
 
 docker-compose down
 docker-compose build
 docker-compose up -d
+cd ..
 
 sleep 10
 
@@ -19,15 +31,9 @@ echo -e "---===Setting up file permissions====---"
 ./bin/exec php "setfacl -R -m u:www-data:rwX /usr/share/nginx/html"
 
 echo -e "Creating database"
-./bin/exec db 'mysql -uroot -proot -e "CREATE DATABASE {{DATABASE_NAME}};"'
+./bin/exec db 'mysql -uroot -proot -e "CREATE DATABASE {{DATABASE_NAME}}";'
 
 if [ -n "{{DUMP_NAME}}" ]; then
     echo -e "Loading database dump"
     ./bin/exec db "mysql -uroot -proot {{DATABASE_NAME}} < /usr/share/nginx/html/{{DUMP_NAME}}"
 fi
-
-containerNames=('nginx' 'php' 'db' 'mailhog')
-for name in "${containerNames[@]}"; do
-    echo -n "IP of container {{PROJECT_NAME}}-$name: "
-    docker inspect --format '{{ .NetworkSettings.IPAddress }}' {{PROJECT_NAME}}-$name
-done

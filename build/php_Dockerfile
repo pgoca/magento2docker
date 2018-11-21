@@ -1,4 +1,4 @@
-FROM php:7.0.32-fpm
+FROM php:{{PHP_VERSION}}-fpm
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y nano vim curl git acl zip gnupg
