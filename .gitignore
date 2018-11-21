@@ -1,7 +1,9 @@
-/bin
+/bin/*
 !/bin/build
 !/bin/custom.conf
 /db
 /php
 /src
 /nginx
+/docker-compose.yml
+.idea/
