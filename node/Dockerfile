@@ -13,5 +13,3 @@ RUN apt-get upgrade && \
     echo 'Install n 6'; sleep 1 && \
     n 6.9.1
 CMD ["npm", "run watch"]
-
-
