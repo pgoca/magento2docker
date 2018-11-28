@@ -19,8 +19,7 @@ return array (
     array (
       'default' => 
       array (
-        'host' => 'localhost',
-        'port' => '13{{PROJECT_NUMBER}}',
+        'host' => '{{PROJECT_NAME}}-db',
         'dbname' => '{{DATABASE_NAME}}',
         'username' => 'root',
         'password' => 'root',

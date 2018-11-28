@@ -115,11 +115,10 @@ mkdir -p ./magento/pub
 
 cp -f ./build/magento/env.php ./magento/app/etc
 sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./magento/app/etc/env.php
-sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./magento/app/etc/env.php
-sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./magento/app/etc/env.php
+sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./magento/app/etc/env.php
 
 cp -f ./build/magento/index.php ./magento/pub/index.php
-
+cp -f ./build/magento/config.php ./magento/app/etc
 cp ./build/php_ini ./php/php.ini
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./php/php.ini
 
