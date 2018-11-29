@@ -2,6 +2,13 @@
 
 cd "$(dirname "$0")/.."
 
+if [ "$1" == "node" ]; then
+    docker start {{PROJECT_NAME}}-node
+    docker exec -ti "{{PROJECT_NAME}}-${1}" /bin/bash -c "$2"
+    echo "Node container will quit now"
+    exit
+fi
+
 if [ -z "$2" ]; then
     docker exec -ti "{{PROJECT_NAME}}-${1}" /bin/bash
 fi

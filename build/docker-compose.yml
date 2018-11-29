@@ -1,7 +1,6 @@
 version: '3'
 services:
   {{PROJECT_NAME}}_nginx:
-    restart: always
     image: nginx:latest
     container_name: "{{PROJECT_NAME}}-nginx"
     ports:
@@ -15,7 +14,6 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     working_dir: "/usr/share/nginx/html"
   {{PROJECT_NAME}}_php:
-    restart: always
     build: "php"
     container_name: "{{PROJECT_NAME}}-php"
     links:
