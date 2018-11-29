@@ -2,10 +2,13 @@
 !/bin/build
 !/bin/custom.conf
 /db
-/php
-/src
-/nginx
-/node
+!/db/.gitkeep
+/php/*
+!/php/.gitkeep
+/nginx/*
+!/nginx/.gitkeep
+/node/*
+!/node/.gitkeep
 /docker-compose.yml
 .idea/
 /magento
