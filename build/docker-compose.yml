@@ -14,7 +14,7 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     working_dir: "/usr/share/nginx/html"
   {{PROJECT_NAME}}_php:
-    build: "php"
+    image: fr4gm3nt/php7-docker:php{{PHP_VERSION}}
     container_name: "{{PROJECT_NAME}}-php"
     links:
       - {{PROJECT_NAME}}_db
@@ -48,7 +48,7 @@ services:
     ports:
       - "6{{PROJECT_NUMBER}}:8025"
   {{PROJECT_NAME}}_node:
-    build: "node"
+    image: fr4gm3nt/php7-docker:node6
     container_name: "{{PROJECT_NAME}}-node"
     volumes:
     - {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}:/usr/share/nginx/html

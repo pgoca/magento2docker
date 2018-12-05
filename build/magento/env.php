@@ -38,5 +38,8 @@ return array (
     ),
   ),
   'x-frame-options' => 'SAMEORIGIN',
-  'MAGE_MODE' => 'default',
+  'MAGE_MODE' => 'developer',
+    'install' => [
+        'date' => 'Tue, 11 Nov 2018 11:11:11 +0000'
+    ]
 );
