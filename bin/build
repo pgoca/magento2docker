@@ -88,11 +88,8 @@ sed -i "s/{{PROJECT_FOLDER}}/$projectFolder/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/$projectAbsolutePath/g" ./docker-compose.yml
+sed -i "s/{{PHP_VERSION}}/$phpVersion/g" ./docker-compose.yml
 
-cp ./build/php_Dockerfile ./php/Dockerfile
-cp ./build/node_Dockerfile ./node/Dockerfile
-
-sed -i "s/{{PHP_VERSION}}/$phpVersion/g" ./php/Dockerfile
 
 cp ./build/default.conf ./nginx/
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./nginx/default.conf
