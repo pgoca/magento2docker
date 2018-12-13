@@ -2,6 +2,7 @@ version: '3'
 services:
   {{PROJECT_NAME}}_nginx:
     image: nginx:latest
+    restart : unless-stopped
     container_name: "{{PROJECT_NAME}}-nginx"
     ports:
       - "8{{PROJECT_NUMBER}}:80"
