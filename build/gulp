@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/php7-docker:node6 bash -c "gulp styles"

@@ -30,8 +30,12 @@ echo -e "---===Setting up file permissions====---"
 ./bin/exec php "setfacl -dR -m u:www-data:rwX /usr/share/nginx/html"
 ./bin/exec php "setfacl -R -m u:www-data:rwX /usr/share/nginx/html"
 
+sleep 10
+
 echo -e "Creating database"
 ./bin/exec db 'mysql -uroot -proot -e "CREATE DATABASE {{DATABASE_NAME}} /*!40100 COLLATE 'utf8_general_ci' */";'
+
+sleep 10
 
 if [ -n "{{DUMP_NAME}}" ]; then
     echo -e "Loading database dump"
