@@ -8,31 +8,33 @@ if [ "$1" == "-h" ]; then
             -gulp       - gulp styles
             -gulp:prod  - gulp styles --production
             -start      - start project containers
-            -facl       - setfacl"
+            -facl       - setfacl
+            <container suffix> - enter container
+            <container suffix> 'command' - execute command (eg. ./bin/exec php 'php -v')"
   exit 0
 fi
 
-if [ "$1" == "gulp" ] || [ "$1" == "-g"]; then
-    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/php7-docker:node6 bash -c "gulp style"
+if [ "$1" == "-gulp" ] || [ "$1" == "-g"]; then
+    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/php7-docker:node6 bash -c "gulp styles"
     echo "I will sacrifice this container in the name of Mighty RAM."
     exit
 fi
 
-if [ "$1" == "gulp:prod" ]; then
-    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/php7-docker:node6 bash -c "gulp style --production"
+if [ "$1" == "-gulp:prod" ]; then
+    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/php7-docker:node6 bash -c "gulp styles --production"
     echo "Job done. Styles minified. Container silently removed. Enjoy the view."
     exit
 fi
 
-if [ "$1" == "start" ]; then
+if [ "$1" == "-start" ]; then
     echo "Starting docker containers"
     cd "$(dirname "$0")/.."
     docker start $(docker ps -aqf name={{PROJECT_NAME}}*)
-    echo docker ps
+    docker ps
     exit
 fi
 
-if [ "$1" == "facl" ]; then
+if [ "$1" == "-facl" ]; then
     ./bin/exec php "setfacl -dR -m u:www-data:rwX /usr/share/nginx/html"
     ./bin/exec php "setfacl -R -m u:www-data:rwX /usr/share/nginx/html"
 fi

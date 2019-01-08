@@ -97,3 +97,4 @@ Version 1.01
 * gulp styles --production - shortcut added
 * changed docker images for php and node6 
 * for custom builds purposes Dockerfiles are still included
+* NodeJS6 container is no longer a part of Mocker. You should pull it separatly and only once. `docker pull fr4gm3nt/mocker:node6` and run it from `./bin/exec`.
