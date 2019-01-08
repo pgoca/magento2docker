@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Version 1.0 of Mocker
+Version 1.01. of Mocker
 
 ## Preparation  
 
@@ -11,7 +11,8 @@ Edit `build\custom.conf`
 1. Change `projectAbsolutePath` to Your all projects folder. 
 2. Copy db sql dump to `./db`. Script will select the newest one from this directory.
 3. Prepare git link to repo.
-4. You can enter gitRepoLink in `build\custom.conf` but You will be asked in building step anyway.   
+4. You can enter gitRepoLink in `build\custom.conf` but You will be asked in building step anyway.  
+5. In Terminal enter docker pull fr4gm3nt/mocker:node6 
 
 ## Building
 
@@ -61,6 +62,8 @@ Eg.
 ```
 bin/exec node "npm -v"
 ```
+type 
+```./bin/exec -h``` for help 
 
 Container suffixes are: php, nginx, db and node.
 If you don't pass an <optional_command>, then it will call `/bin/bash` by default and you'll end up inside of the container.
@@ -85,3 +88,12 @@ Fork of https://github.com/pgoca/magento2docker
 3. http://localhost:8080 is default address - port may be changed during installation. 
 4. Copy database sql file to `db` folder. Installer will choose to newset one from the folder. You can also type database of Your choice.
 5. Default path for project files is /var/www/m2/. You can change this in bin/custom.conf `projectAbsolutePath`. You can also change this path during installation.
+
+## Change log:
+
+Version 1.01
+
+* short help command added - type `./bin/exec -h` for help
+* gulp styles --production - shortcut added
+* changed docker images for php and node6 
+* for custom builds purposes Dockerfiles are still included

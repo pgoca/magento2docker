@@ -90,18 +90,13 @@ sed -i "s/{{PROJECT_NUMBER}}/$projectNumber/g" ./docker-compose.yml
 sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/$projectAbsolutePath/g" ./docker-compose.yml
 sed -i "s/{{PHP_VERSION}}/$phpVersion/g" ./docker-compose.yml
 
-cp ./build/gulp ./magento/bin/build/gulp
-sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/$projectAbsolutePath/g" ./magento/bin/build/gulp
-sed -i "s/{{PROJECT_FOLDER}}/$projectFolder/g" ./magento/bin/build/gulp
-
 cp ./build/default.conf ./nginx/
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./nginx/default.conf
 
 cp ./build/exec ./bin/exec
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./bin/exec
-
-cp ./build/start ./bin/start
-sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./bin/start
+sed -i "s/{{PROJECT_ABSOLUTE_PATH}}/$projectAbsolutePath/g" ./bin/exec
+sed -i "s/{{PROJECT_FOLDER}}/$projectFolder/g" ./bin/exec
 
 cp ./build/install ./bin/install
 sed -i "s/{{DUMP_NAME}}/$dumpName/g" ./bin/install

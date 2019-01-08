@@ -4,14 +4,22 @@ alias ..3="cd ../../.."
 alias ..4="cd ../../../.."
 alias ..5="cd ../../../../.."
 
-alias m2combo='m2cs && m2cv && m2su && m2compile && m2deploy'
-alias m2combo:ee='rm -rf generated/* && m2cs && m2cv && m2su && m2compile && m2deploy:ee && m2style'
+alias m2combo='m2rmf && m2compile && m2static'
 alias m2compile='php bin/magento setup:di:compile'
 alias m2cs='rm -rf pub/static/*'
 alias m2cv='rm -rf var/generation/* var/view_processed/* var/page_cache/* var/cache/* var/di/*'
-alias m2deploy='php bin/magento setup:static-content:deploy fr_FR en_US && php bin/magento cache:clean'
-alias m2deploy:ee='bin/magento setup:static-content:deploy -f en_US fr_FR'
-alias m2style='cd vendor/snowdog/frontools && gulp styles && ..3'
-alias m2style:setup='mkdir -p vendor/snowdog/frontools && npm install gulp && sudo n 6.9 && sudo npm install && sudo n 6.9.1 && gulp styles && ..3'
-alias m2style:update='cd vendor/snowdog/frontools && sudo n 6.9 && sudo npm install && sudo n 6.9.1 && gulp styles && ..3'
 alias m2su='php -f bin/magento setup:upgrade'
+alias m2rmf='rm -rf generated/* var/view_processed/* var/page_cache/* var/cache/* var/di/* var/generation/* pub/static/*'
+alias ath:install='composer require honl/magento2-templatehints && php bin/magento module:enable Ho_Templatehints && m2su'
+
+genStaticTempFunc() {
+   magever=$(php bin/magento --version)
+   trimmed=${magever/*2./}
+   subversion=${trimmed%.*}
+   if [[ $(($subversion)) -lt 2 ]]; then
+      php bin/magento setup:static-content:deploy -j $1 $2
+   else
+      php bin/magento setup:static-content:deploy -f -j $1 $2
+   fi
+}
+alias m2static="genStaticTempFunc"
