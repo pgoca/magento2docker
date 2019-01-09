@@ -15,13 +15,13 @@ if [ "$1" == "-h" ]; then
 fi
 
 if [ "$1" == "-gulp" ] || [ "$1" == "-g" ]; then
-    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/php7-docker:node6 bash -c "gulp styles"
+    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/mocker:node6 bash -c "gulp styles"
     echo "I will sacrifice this container in the name of Mighty RAM."
     exit
 fi
 
 if [ "$1" == "-gulp:prod" ]; then
-    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/php7-docker:node6 bash -c "gulp styles --production"
+    docker run --rm -w /usr/share/nginx/home/vendor/snowdog/frontools/ -u www-data -v {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}/:/usr/share/nginx/home/ -ti fr4gm3nt/mocker:node6 bash -c "gulp styles --production"
     echo "Job done. Styles minified. Container silently removed. Enjoy the view."
     exit
 fi
