@@ -56,8 +56,10 @@ fi
 echo -n -e "\e[1;37m[DEFAULT=7.1] PHP version: "
 phpVersion=$(getUserInput "7.1")
 
-echo -n -e "\e[1;37m[DEFAULT=magento] Database name: "
-mysqlDatabaseName=$(getUserInput "magento")
+mysqlDatabaseName=${projectName/-*/}
+
+echo -n -e "\e[1;37m[DEFAULT=$mysqlDatabaseName] Database name: "
+mysqlDatabaseName=$(getUserInput $mysqlDatabaseName)
 
 echo -n -e "\e[1;37mDo you want to import newest database dump from db directory (e - enter filename)? [Y/n/e]: "
 doImportDb=$(getUserInput "Y")
@@ -109,7 +111,7 @@ sed -i "s>{{PROJECT_NUMBER}}>$projectNumber>g" ./bin/install
 
 mkdir -p ./magento/app/etc
 mkdir -p ./magento/pub
-
+cp ./bin/exec ./magento/bin/
 cp -f ./build/magento/env.php ./magento/app/etc
 sed -i "s/{{DATABASE_NAME}}/$mysqlDatabaseName/g" ./magento/app/etc/env.php
 sed -i "s/{{PROJECT_NAME}}/$projectName/g" ./magento/app/etc/env.php

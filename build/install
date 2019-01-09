@@ -6,7 +6,6 @@ mkdir -p {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}
 echo -e "\e[0K\r \e[0;33mCreating project directory: {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"
 echo -e "\\r${CHECK_MARK}  \e[0;32mCreated\e[0m"
 
-
 GITREPO="{{GIT_REPO}}"
 if [ -n "$GITREPO" ]; then
 echo {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"/"
@@ -18,25 +17,22 @@ cd magento
 cp -r ./* {{PROJECT_ABSOLUTE_PATH}}{{PROJECT_FOLDER}}"/"
 # cd "$(dirname "$0")/.."
 
+cd ..
 
 docker-compose down
 docker-compose build
 docker-compose up -d
-cd ..
 
 sleep 10
-
 echo -e "---===Setting up file permissions====---"
 ./bin/exec php "setfacl -dR -m u:www-data:rwX /usr/share/nginx/html"
 ./bin/exec php "setfacl -R -m u:www-data:rwX /usr/share/nginx/html"
 
 sleep 10
-if [ -z "{{DUMP_NAME}}" ]; then
 echo -e "Creating database"
 ./bin/exec db 'mysql -uroot -proot -e "CREATE DATABASE {{DATABASE_NAME}} /*!40100 COLLATE 'utf8_general_ci' */";'
-fi
-sleep 10
 
+sleep 10
 if [ -n "{{DUMP_NAME}}" ]; then
     echo -e "Loading database dump"
     ./bin/exec db "mysql -uroot -proot {{DATABASE_NAME}} < /usr/share/nginx/html/{{DUMP_NAME}}"
