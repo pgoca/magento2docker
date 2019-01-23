@@ -7,7 +7,6 @@ if [ "$1" == "-h" ]; then
             -h          - show this help
             -gulp       - also -g - gulp styles
             -gulp:prod  - gulp styles --production
-            -start      - also -s - starts project containers
             -facl       - setfacl
             <container suffix> - enter container
             <container suffix> 'command' - execute command (eg. ./bin/exec php 'php -v')"
@@ -32,7 +31,7 @@ if [ "$1" == "-facl" ]; then
 fi
 
 if [ -z "$2" ]; then
-    docker exec -ti "{{PROJECT_NAME}}-${1}" /bin/bash
+    docker-compose exec "${1}" /bin/bash
 fi
 
-docker exec -ti "{{PROJECT_NAME}}-${1}" /bin/bash -c "$2"
+docker-compose exec "${1}" /bin/bash -c "$2"
