@@ -24,16 +24,19 @@ docker-compose build
 docker-compose up -d
 
 sleep 10
-echo -e "---===Setting up file permissions====---"
-./bin/exec php "setfacl -dR -m u:www-data:rwX /usr/share/nginx/html"
-./bin/exec php "setfacl -R -m u:www-data:rwX /usr/share/nginx/html"
+echo -e " \e[0;33m ---===Setting up file permissions====---"
+docker-compose exec php bash -c "setfacl -dR -m u:www-data:rwX /usr/share/nginx/html"
+docker-compose exec php bash -c "setfacl -R -m u:www-data:rwX /usr/share/nginx/html"
+echo -e "\\r${CHECK_MARK} \e[0;32m File permissions set up"
 
 sleep 10
-echo -e "Creating database"
+echo -e " \e[0;33m ---========Creating database=========---"
 ./bin/exec db 'mysql -uroot -proot -e "CREATE DATABASE {{DATABASE_NAME}} /*!40100 COLLATE 'utf8_general_ci' */";'
 
 sleep 10
 if [ -n "{{DUMP_NAME}}" ]; then
-    echo -e "Loading database dump"
+echo -e " \e[0;33m ---======Loading database dump=======---"
     ./bin/exec db "mysql -uroot -proot {{DATABASE_NAME}} < /usr/share/nginx/html/{{DUMP_NAME}}"
 fi
+
+echo -e "\\r${CHECK_MARK} \e[0;32m Installer has finished the job"
